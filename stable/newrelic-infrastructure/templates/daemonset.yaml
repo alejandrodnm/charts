@@ -1,4 +1,4 @@
-{{- if and (or .Values.licenseKey .Values.customSecret) .Values.cluster }}
+{{- if and (or .Values.global.licenseKey (and .Values.global.customSecretName .Values.global.customSecretLicenseKey)) .Values.global.cluster }}
 apiVersion: apps/v1beta2
 kind: DaemonSet
 metadata:
@@ -35,15 +35,15 @@ spec:
             - name: NRIA_LICENSE_KEY
               valueFrom:
                 secretKeyRef:
-                  {{- if .Values.licenseKey }}
+                  {{- if .Values.global.licenseKey }}
                   name: {{ template "newrelic.fullname" . }}-config
                   key: license
                   {{- else }}
-                  name: {{ .Values.customSecret.name }}
-                  key: {{ .Values.customSecret.key }}
+                  name: {{ .Values.global.customSecretName }}
+                  key: {{ .Values.global.customSecretLicenseKey }}
                   {{- end }}
             - name: "CLUSTER_NAME"
-              value: "{{ .Values.cluster }}"
+              value: "{{ .Values.global.cluster }}"
             {{- if .Values.kubeStateMetricsUrl }}
             - name: "KUBE_STATE_METRICS_URL"
               value: "{{ .Values.kubeStateMetricsUrl }}"
