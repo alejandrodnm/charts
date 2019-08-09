@@ -1,4 +1,4 @@
-{{ if and (or .Values.global.licenseKey (and .Values.global.customSecretName .Values.global.customSecretLicenseKey)) .Values.global.cluster }}
+{{- if (include "newrelic.areValuesValid" .) }}
 Your deployment of the New Relic Infrastructure agent is complete. You can check on the progress of this by running the following command:
 
     kubectl get daemonset -o wide -w --namespace {{ .Release.Namespace }} {{ template "newrelic.fullname" . }}
@@ -12,8 +12,8 @@ This deployment will be incomplete until you get your API key from New Relic.
 Then run:
 
     helm upgrade {{ .Release.Name }} \
-        --set global.licenseKey=YOUR-KEY-HERE \
-        --set global.cluster=YOUR-CLUSTER-NAME \
+        --set licenseKey=YOUR-KEY-HERE \
+        --set cluster=YOUR-CLUSTER-NAME \
         stable/newrelic-infrastructure
 
 {{- end -}}
