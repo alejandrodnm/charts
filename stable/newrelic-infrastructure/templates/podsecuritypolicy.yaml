@@ -3,7 +3,6 @@ apiVersion: extensions/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: privileged-{{ template "newrelic.fullname" . }}
-  namespace: {{ .Release.Namespace }}
 spec:
   allowedCapabilities:
   - '*'
