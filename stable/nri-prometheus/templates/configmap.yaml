@@ -1,0 +1,30 @@
+kind: ConfigMap
+metadata:
+  name: {{ template "nri-prometheus.fullname" . }}-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "nri-prometheus.labels" . | indent 4 }}
+apiVersion: v1
+data:
+  config.yaml: |
+{{- if .Values.config }}
+{{ toYaml .Values.config | indent 4 }}
+{{- else }}
+    transformations:
+      - description: "General processing rules"
+        rename_attributes:
+          - metric_prefix: ""
+            attributes:
+              container_name: "containerName"
+              pod_name: "podName"
+              namespace: "namespaceName"
+              node: "nodeName"
+              container: "containerName"
+              pod: "podName"
+              deployment: "deploymentName"
+        ignore_metrics:
+          - prefixes:
+              - go_
+              - http_
+              - process_
+{{ end }}

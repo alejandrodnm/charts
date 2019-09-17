@@ -1,0 +1,87 @@
+# IMPORTANT: Specify your New Relic API key here.
+# licenseKey:
+#
+# or Specify secret which contains New Relic API key
+# customSecretName: secret_name
+# customSecretLicenseKey: secret_key
+#
+# IMPORTANT: The Kubernetes cluster name
+# https://docs.newrelic.com/docs/kubernetes-monitoring-integration
+# cluster: ""
+#
+# The previous values can also be declared as global in order to be
+# shared by other newrelic charts
+#
+# global:
+#   licenseKey:
+#   customSecretName: secret_name
+#   customSecretLicenseKey: secret_key
+#   cluster: ""
+
+prometheusScrape: "true"
+
+nameOverride: ""
+
+fullnameOverride: ""
+
+image:
+  # TODO: change to nri-prometheus
+  repository: newrelic/kps
+  tag: 0.10.0
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the name template
+  name: ""
+
+# If you wish to provide your own config.yaml file include it under config:
+# the sample config file is included here as an example.
+# config:
+  #
+  # New Relic Prometheus configuration file
+  #
+  # transformations:
+  #     - description: "General processing rules"
+  #       add_attributes:
+  #         - metric_prefix: ""
+  #           attributes:
+  #             my_extra_attr: "my-value"
+  #       rename_attributes:
+  #         - metric_prefix: ""
+  #           attributes:
+  #             container_name: "containerName"
+  #             pod_name: "podName"
+  #             namespace: "namespaceName"
+  #             node: "nodeName"
+  #             container: "containerName"
+  #             pod: "podName"
+  #             deployment: "deploymentName"
+  #       ignore_metrics:
+  #         - prefixes:
+  #           - go_
+  #           - http_
+  #           - process_
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
