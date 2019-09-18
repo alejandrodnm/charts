@@ -2,7 +2,9 @@
 
 ## Chart Details
 
-This chart will deploy the New Relic's Prometheus OpenMetrics Integration.
+This chart will deploy the [New Relic's Prometheus OpenMetrics
+Integration](https://github.com/newrelic/nri-prometheus).
+
 
 ## Configuration
 

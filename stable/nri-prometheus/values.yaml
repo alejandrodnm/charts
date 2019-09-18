@@ -25,9 +25,8 @@ nameOverride: ""
 fullnameOverride: ""
 
 image:
-  # TODO: change to nri-prometheus
-  repository: newrelic/kps
-  tag: 0.10.0
+  repository: newrelic/nri-prometheus
+  tag: 1.0.0
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -54,31 +53,75 @@ serviceAccount:
 
 # If you wish to provide your own config.yaml file include it under config:
 # the sample config file is included here as an example.
-# config:
-  #
-  # New Relic Prometheus configuration file
-  #
-  # transformations:
-  #     - description: "General processing rules"
-  #       add_attributes:
-  #         - metric_prefix: ""
-  #           attributes:
-  #             my_extra_attr: "my-value"
-  #       rename_attributes:
-  #         - metric_prefix: ""
-  #           attributes:
-  #             container_name: "containerName"
-  #             pod_name: "podName"
-  #             namespace: "namespaceName"
-  #             node: "nodeName"
-  #             container: "containerName"
-  #             pod: "podName"
-  #             deployment: "deploymentName"
-  #       ignore_metrics:
-  #         - prefixes:
-  #           - go_
-  #           - http_
-  #           - process_
+config:
+  # How often the integration should run. Defaults to 30s.
+  # scrape_duration: "30s"
+  # The HTTP client timeout when fetching data from endpoints. Defaults to 30s.
+  # scrape_timeout: "30s"
+  # Wether the integration should run in verbose mode or not. Defaults to false.
+  # verbose: true
+  # Wether the integration should skip TLS verification or not. Defaults to false.
+  # insecure_skip_verify: false
+  # The label used to identify scrapable targets. Defaults to "prometheus.io/scrape".
+  # scrape_enabled_label: "prometheus.io/scrape"
+  # Wether k8s nodes needs to be labelled to be scraped or not. Defaults to false.
+  require_scrape_enabled_label_for_nodes: true
+  transformations:
+    - description: "General processing rules"
+      rename_attributes:
+        - metric_prefix: ""
+          attributes:
+            container_name: "containerName"
+            pod_name: "podName"
+            namespace: "namespaceName"
+            node: "nodeName"
+            container: "containerName"
+            pod: "podName"
+            deployment: "deploymentName"
+      ignore_metrics:
+        # Metrics on pods and containers are being ignored as they are already collected by the New Relic Kubernetes Integration.
+        - except:
+          - kube_hpa_
+          - kube_daemonset_
+          - kube_statefulset_
+          - kube_endpoint_
+          - kube_service_
+          - kube_limitrange
+          - kube_node_
+          - kube_poddisruptionbudget_
+          - kube_resourcequota
+          - nr_stats
+      copy_attributes:
+        - from_metric: "kube_hpa_labels"
+          to_metrics: "kube_hpa_"
+          match_by:
+            - namespace
+            - hpa
+        - from_metric: "kube_daemonset_labels"
+          to_metrics: "kube_daemonset_"
+          match_by:
+            - namespace
+            - daemonset
+        - from_metric: "kube_statefulset_labels"
+          to_metrics: "kube_statefulset_"
+          match_by:
+            - namespace
+            - statefulset
+        - from_metric: "kube_endpoint_labels"
+          to_metrics: "kube_endpoint_"
+          match_by:
+            - namespace
+            - endpoint
+        - from_metric: "kube_service_labels"
+          to_metrics: "kube_service_"
+          match_by:
+            - namespace
+            - service
+        - from_metric: "kube_node_labels"
+          to_metrics: "kube_node_"
+          match_by:
+            - namespace
+            - node
 
 nodeSelector: {}
 

@@ -11,6 +11,6 @@ roleRef:
   name: {{ template "nri-prometheus.fullname" . }}
 subjects:
 - kind: ServiceAccount
-  name: {{ template "nri-prometheus.fullname" . }}
+  name: {{ template "nri-prometheus.serviceAccountName" . }}
   namespace: {{ .Release.Namespace }}
 {{- end -}}
